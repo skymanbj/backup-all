@@ -3,7 +3,7 @@
   const DEFAULT_TARGETS = [
     {
       id: 'native:desktop-apps',
-      name: '桌面软件（Magpie / Lamp Guide / FreeLLMAPI）',
+      name: '桌面软件（Magpie / Lamp Guide / FreeLLMAPI / FMH）',
       desc: '调用本机一键备份脚本（保存至 D:\\Backup-All\\Backups）',
       kind: 'native',
       enabled: true

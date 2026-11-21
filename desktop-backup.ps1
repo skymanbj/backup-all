@@ -185,6 +185,41 @@ try {
   $results += [pscustomobject]@{ Name = 'FreeLLMAPI'; Ok = $false; Msg = $err }
 }
 
+# ---------------------------------------------------------
+# 4/4 FMH (D:\Free-Model-Hub)
+# ---------------------------------------------------------
+Write-Log "[4/4] 正在备份 FMH (Free-Model-Hub)..."
+try {
+  $fmhRoot = 'D:\Free-Model-Hub'
+  if (-not (Test-Path $fmhRoot)) { throw "未找到目录 $fmhRoot" }
+
+  $stage = Join-Path $tempRoot 'fmh'
+  New-Item -ItemType Directory -Path $stage -Force | Out-Null
+  $copiedCount = 0
+  foreach ($cf in @('free_models.db', 'free_models.db-wal', 'free_models.db-shm')) {
+    if (Copy-ItemSafe (Join-Path $fmhRoot $cf) (Join-Path $stage $cf)) { $copiedCount++ }
+  }
+  $fmhData = Join-Path $fmhRoot 'data'
+  if (Test-Path $fmhData) {
+    Get-ChildItem -Path $fmhData -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
+      $rel = $_.FullName.Substring($fmhData.Length + 1)
+      if (Copy-ItemSafe $_.FullName (Join-Path $stage ("data\" + $rel))) { $copiedCount++ }
+    }
+  }
+  if ($copiedCount -eq 0) { throw "未找到可备份的 FMH 数据文件" }
+
+  $zipPath = Join-Path $todayDir "fmh-backup-$dateStr.zip"
+  Compress-FolderToZip $stage $zipPath
+  $sizeKB = [math]::Round((Get-Item $zipPath).Length / 1KB, 1)
+  $msg = "数据库与数据已打包，共 $copiedCount 个文件 (${sizeKB} KB)"
+  Write-Log "  [成功] FMH: $msg"
+  $results += [pscustomobject]@{ Name = 'FMH'; Ok = $true; Msg = $msg }
+} catch {
+  $err = $_.Exception.Message
+  Write-Log "  [失败] FMH: $err"
+  $results += [pscustomobject]@{ Name = 'FMH'; Ok = $false; Msg = $err }
+}
+
 # 清理临时目录
 Remove-Item -Path $tempRoot -Recurse -Force -ErrorAction SilentlyContinue
 
@@ -194,11 +229,12 @@ Get-ChildItem -Path $backupRoot -Directory -ErrorAction SilentlyContinue | Where
 } | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
 
 # 汇总并弹窗通知
+$totalCount = $results.Count
 $okCount = ($results | Where-Object { $_.Ok }).Count
 $failList = $results | Where-Object { -not $_.Ok }
 $failCount = $failList.Count
 
-$summary = "成功 $okCount/3 个"
+$summary = "成功 $okCount/$totalCount 个"
 if ($failCount -gt 0) {
   $summary += "，失败：" + (($failList | ForEach-Object { $_.Name }) -join '、')
 }

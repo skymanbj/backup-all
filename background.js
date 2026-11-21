@@ -467,5 +467,50 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     return true;
   }
 
+  if (msg.type === 'BACKUP_ALL_OPEN_FOLDER') {
+    try {
+      chrome.runtime.sendNativeMessage('com.backupall.desktop', { action: 'open_folder' }, (resp) => {
+        if (chrome.runtime.lastError) {
+          sendResponse({ ok: false, message: chrome.runtime.lastError.message });
+        } else {
+          sendResponse({ ok: Boolean(resp?.ok) });
+        }
+      });
+    } catch (err) {
+      sendResponse({ ok: false, message: err?.message || String(err) });
+    }
+    return true;
+  }
+  return false;
+});
+
+// 接收其他扩展发来的“静默导出到固定备份目录”请求
+chrome.runtime.onMessageExternal.addListener((msg, _sender, sendResponse) => {
+  if (!msg || typeof msg !== 'object') return false;
+  if (msg.type === 'BACKUP_ALL_SAVE_FILE' && msg.filename && msg.content !== undefined) {
+    (async () => {
+      try {
+        const saved = await saveJsonToDownloads(msg.filename, msg.content, msg.mimeType);
+        sendResponse({ ok: true, path: saved.path, viaNative: saved.viaNative });
+      } catch (err) {
+        sendResponse({ ok: false, message: err?.message || String(err) });
+      }
+    })();
+    return true;
+  }
+  if (msg.type === 'BACKUP_ALL_OPEN_FOLDER') {
+    try {
+      chrome.runtime.sendNativeMessage('com.backupall.desktop', { action: 'open_folder' }, (resp) => {
+        if (chrome.runtime.lastError) {
+          sendResponse({ ok: false, message: chrome.runtime.lastError.message });
+        } else {
+          sendResponse({ ok: Boolean(resp?.ok) });
+        }
+      });
+    } catch (err) {
+      sendResponse({ ok: false, message: err?.message || String(err) });
+    }
+    return true;
+  }
   return false;
 });
