@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Backup-All 扩展自动备份总控",
+  "version": "1.0.0",
+  "description": "打开浏览器时自动触发所有已配置扩展的云同步与本地数据备份",
+  "permissions": [
+    "storage",
+    "downloads",
+    "alarms",
+    "notifications",
+    "nativeMessaging"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Backup-All 扩展自动备份总控",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

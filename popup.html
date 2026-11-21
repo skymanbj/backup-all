@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Backup-All 扩展自动备份总控</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header class="header">
+    <div>
+      <h1>Backup-All</h1>
+      <p class="subtitle">浏览器启动自动备份总控</p>
+    </div>
+    <button id="runAllBtn" class="btn-primary">立即全部备份</button>
+  </header>
+
+  <div id="noticeBar" class="notice-bar" hidden></div>
+
+  <section id="progressCard" class="progress-card" hidden>
+    <div class="progress-top">
+      <span id="progressText" class="progress-text">准备备份...</span>
+      <span id="progressPercent" class="progress-percent">0%</span>
+    </div>
+    <div class="progress-track">
+      <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+    </div>
+  </section>
+
+  <section class="settings-card">
+    <label class="toggle-row">
+      <input type="checkbox" id="autoRunToggle" />
+      <span>打开浏览器时自动启动备份（延迟 15 秒）</span>
+    </label>
+    <div class="setting-inline">
+      <label for="cooldownSelect">防重复间隔：</label>
+      <select id="cooldownSelect">
+        <option value="0">每次打开都备份</option>
+        <option value="30">30 分钟内不重复</option>
+        <option value="360">6 小时内不重复</option>
+        <option value="1440">每天自动备份一次</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="list-header">
+    <span id="summaryText">已启用 0 / 0 个扩展</span>
+    <button id="openDownloadsBtn" class="btn-link">打开备份文件夹</button>
+  </section>
+
+  <ul id="targetList" class="target-list"></ul>
+
+  <details class="add-box">
+    <summary>＋ 添加自定义扩展 / 恢复默认列表</summary>
+    <div class="add-form">
+      <input type="text" id="newExtName" placeholder="扩展名称（例如：WebHighlight）" />
+      <input type="text" id="newExtId" placeholder="32 位扩展 ID（从 chrome://extensions 复制）" />
+      <div class="add-actions">
+        <button id="addExtBtn" class="btn-secondary">添加</button>
+        <button id="resetBtn" class="btn-ghost">恢复默认 9 项</button>
+      </div>
+    </div>
+  </details>
+
+  <script src="registry.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

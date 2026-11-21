@@ -1,0 +1,9 @@
+{
+  "name": "com.backupall.desktop",
+  "description": "Backup-All Native Messaging Host for Desktop Apps (Magpie / Lamp Guide / FreeLLMAPI)",
+  "path": "D:\\Backup-All\\native-host\\host.bat",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://dpebkkojhmgilchcgddgbknfpcnlcfna/"
+  ]
+}

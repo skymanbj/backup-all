@@ -1,0 +1,17 @@
+# 个人备份数据与日志（禁止上传到 GitHub）
+Backups/
+DesktopBackups/
+ExtensionBackups/
+*.log
+*.zip
+*.toml
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# 系统临时文件
+Thumbs.db
+desktop.ini
+.DS_Store
