@@ -1,4 +1,4 @@
-# Backup-All 桌面软件自动备份脚本（Magpie / Lamp Guide / FreeLLMAPI）
+﻿# Backup-All 桌面软件自动备份脚本（Magpie / Lamp Guide / FreeLLMAPI）
 param(
   [switch]$Silent
 )
